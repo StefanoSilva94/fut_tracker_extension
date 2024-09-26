@@ -21,6 +21,7 @@ function sendBatchDataToBackend(batchData, endpoint) {
     })
     .catch((error) => {
         console.error('Error sending batch data to the backend:', error);
+        console.log("API URL: ", apiUrl);
     });
 }
 

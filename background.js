@@ -7,9 +7,10 @@ chrome.management.get(chrome.runtime.id, function(extensionInfo) {
     let apiUrl;
 
     if (extensionInfo.installType === 'development') {
-        apiUrl = 'http://localhost:8000';
+        // apiUrl = 'http://localhost:8000';
+        apiUrl = "https://api.fut-tracker.co.uk";
     } else {
-        apiUrl = 'Temp url';
+        apiUrl = "https://api.fut-tracker.co.uk";
     }
 
     // Store the API URL in chrome.storage.local

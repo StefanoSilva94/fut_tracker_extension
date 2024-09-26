@@ -46,16 +46,17 @@ document.addEventListener('DOMContentLoaded', function () {
           console.log('here is the login api: ', loginUrl);
 
           try {
-              const response = await fetch(loginUrl, {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/x-www-form-urlencoded'
-                  },
-                  body: new URLSearchParams({
-                      username: email,
-                      password: password
-                  })
-              });
+
+                const response = await fetch(loginUrl, {
+                   method: "POST",
+                   headers: {
+                     "Content-Type": "application/x-www-form-urlencoded",
+                   },
+                   body: new URLSearchParams({
+                     username: email,
+                     password: password,
+                   }),
+                 });
 
               const data = await response.json();
 
