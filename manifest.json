@@ -7,7 +7,6 @@
         "storage",
         "activeTab",
         "scripting",
-        "management",
         "activeTab",
         "tabs"
     ],
@@ -19,7 +18,7 @@
     },
     "content_scripts": [
         {
-            "matches": ["https://www.ea.com/*"],
+            "matches": ["https://www.ea.com/fifa/ultimate-team/web-app/*"],
             "js": [
             "content/apis.js", 
             "content/extractDOMData.js", 
