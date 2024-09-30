@@ -104,40 +104,47 @@ function waitForItemsHeader() {
  * @param {String} packName : pack name that has been opened
  */
 async function handlePackOpened(packName) {
-    console.log(`${packName} has been opened`);
+  console.log(`${packName} has been opened`);
 
-    let user_id;
-
-    chrome.storage.local.get(["user_id"]).then((result) => {
-      user_id = result.user_id || 0;
-      console.log("user_id: ", user_id);
+  // Get user_id from chrome.storage.local
+  let user_id = await new Promise((resolve, reject) => {
+    chrome.storage.local.get(["user_id"], (result) => {
+      if (chrome.runtime.lastError) {
+        console.error("Error retrieving user_id:", chrome.runtime.lastError);
+        resolve(0); // Default value in case of error
+      } else {
+        resolve(result.user_id || 0);
+      }
     });
+  });
 
+  console.log("user_id:", user_id);
 
-    // Wait for the items header to be present
-    await waitForItemsHeader();
+  // Wait for the items header to be present
+  await waitForItemsHeader();
 
-    const packItems = document.querySelectorAll('.entityContainer');
-    console.log(`Pack Items Length: ${packItems.length}`);
+  const packItems = document.querySelectorAll(".entityContainer");
+  console.log(`Pack Items Length: ${packItems.length}`);
 
-    let itemsData = [];
-    packItems.forEach(item => {
-        let itemData = extractKeyPlayerAttributes(item, 'pack');
-        itemData.pack_name = packName;
-        itemData.user_id = user_id;
-        if (!itemData.rating) return;
+  let itemsData = [];
+  packItems.forEach((item) => {
+    let itemData = extractKeyPlayerAttributes(item, "pack");
+    itemData.pack_name = packName;
+    itemData.user_id = user_id; // Now user_id is properly set
 
-        const position = itemData.position;
-        if (position === "GK") {
-            itemData = { ...itemData, ...extractGoalkeeperAttributes(item) };
-        } else {
-            itemData = { ...itemData, ...extractOutfieldPlayerAttributes(item) };
-        }
+    if (!itemData.rating) return;
 
-        console.log("Item object:", itemData);
-        itemsData.push(itemData);
-    });
+    const position = itemData.position;
+    if (position === "GK") {
+      itemData = { ...itemData, ...extractGoalkeeperAttributes(item) };
+    } else {
+      itemData = { ...itemData, ...extractOutfieldPlayerAttributes(item) };
+    }
 
-    console.log("ItemsData: ", itemsData);
-    sendBatchDataToBackend({ pack_name: packName, items: itemsData }, '/packs/');
+    console.log("Item object:", itemData);
+    itemsData.push(itemData);
+  });
+
+  console.log("ItemsData:", itemsData);
+  sendBatchDataToBackend({ pack_name: packName, items: itemsData }, "/packs/");
 }

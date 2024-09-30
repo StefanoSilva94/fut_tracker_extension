@@ -39,21 +39,32 @@ function addEventListenersToPicks() {
  * which element is currently selected by the user
  * @param {string} pickName - name of the player pick opened
  */
-function handlePickOpened(pickName) {
+async function handlePickOpened(pickName) {
     console.log(`Player Pick: ${pickName} has been opened`);
     
     const pickItems = document.querySelectorAll(".player-pick-option");
     // Array to hold all item data
     let itemsData = [];
 
-    // Extract user id from local storage, if user is not logged in user default user
-    let userID = JSON.parse(localStorage.getItem('userId')) || 0;
+    // Get user_id from chrome.storage.local
+    let user_id = await new Promise((resolve, reject) => {
+        chrome.storage.local.get(["user_id"], (result) => {
+        if (chrome.runtime.lastError) {
+            console.error("Error retrieving user_id:", chrome.runtime.lastError);
+            resolve(0); // Default value in case of error
+        } else {
+            resolve(result.user_id || 0);
+        }
+        });
+    });
+
+    console.log("user_id:", user_id);
 
     pickItems.forEach(item => {
         // Get the players name, rating, position, isTradeable, isDuplicate
         let itemData = extractKeyPlayerAttributes(item, 'pick');
         itemData.pack_name = pickName
-        itemData.user_id = userID
+        itemData.user_id = user_id;
         const position = itemData.position
         // Populate attributes based on player position
         if (position === "GK") {
