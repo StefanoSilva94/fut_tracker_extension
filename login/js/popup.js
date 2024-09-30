@@ -52,14 +52,28 @@ function loadLogin() {
 
 
 function loadLogout() {
-    fetch('logout.html')
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById('content').innerHTML = html;
-            // Dispatch a custom event to notify that the logout view is loaded
-            document.dispatchEvent(new Event('showLogout'));
-        })
-        .catch(error => console.error('Error loading logout form:', error));
+  fetch("logout.html")
+    .then((response) => response.text())
+    .then((html) => {
+      document.getElementById("content").innerHTML = html;
+      // Dispatch a custom event to notify that the logout view is loaded
+      document.dispatchEvent(new Event("showLogout"));
+
+      // Add event listener for the logout button
+      document
+        .getElementById("signOutButton")
+        .addEventListener("click", handleLogout);
+    })
+    .catch((error) => console.error("Error loading logout form:", error));
+}
+
+function handleLogout() {
+  chrome.storage.local.remove(["access_token", "user_id"], function () {
+    console.log("Access token and user ID removed from local storage.");
+    // Optionally, update the popup to reflect the logged-out state
+    updatePopup();
+    loadLogin();
+  });
 }
 
 
@@ -86,6 +100,7 @@ updatePopup();
 // Optional: Monitor changes to the storage
 chrome.storage.onChanged.addListener((changes, area) => {
     if (area === 'local' && 'access_token' in changes) {
+        console.log("changes found")
         updatePopup();
     }
 });

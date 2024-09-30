@@ -106,17 +106,23 @@ function waitForItemsHeader() {
 async function handlePackOpened(packName) {
   console.log(`${packName} has been opened`);
 
-  // Get user_id from chrome.storage.local
-  let user_id = await new Promise((resolve, reject) => {
-    chrome.storage.local.get(["user_id"], (result) => {
-      if (chrome.runtime.lastError) {
-        console.error("Error retrieving user_id:", chrome.runtime.lastError);
-        resolve(0); // Default value in case of error
-      } else {
-        resolve(result.user_id || 0);
-      }
+  let user_id;
+
+  try {
+    user_id = await new Promise((resolve, reject) => {
+      chrome.storage.local.get(["user_id"], (result) => {
+        if (chrome.runtime.lastError) {
+          console.error("Error retrieving user_id:", chrome.runtime.lastError);
+          resolve(0); // Default value in case of error
+        } else {
+          resolve(result.user_id || 0);
+        }
+      });
     });
-  });
+  } catch (error) {
+    console.error("Error accessing storage:", error);
+    user_id = 0; // Default value in case of error
+  }
 
   // Wait for the items header to be present
   await waitForItemsHeader();
