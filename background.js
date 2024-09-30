@@ -3,7 +3,19 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 // Define the API URL based on the extension's installation type
-let apiUrl = "https://api.fut-tracker.co.uk";
+let apiURL = "https://api.fut-tracker.co.uk";
+chrome.storage.local.set(
+  {
+    'apiURL': apiURL,
+  },
+  function () {
+    if (chrome.runtime.lastError) {
+      console.error("Error updating storage:", chrome.runtime.lastError);
+    } else {
+      console.log("Storage updated successfully");
+    }
+  }
+);
 
 // Function to update the popup based on the presence and validity of access_token
 function updatePopup() {

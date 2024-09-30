@@ -7,7 +7,7 @@
 function addEventListenersToPacks() {
     // Get all Open buttons on the page
     const openButtons = document.querySelectorAll('button.currency.call-to-action');
-  
+
     openButtons.forEach(button => {
     // Extract the pack name from the closest `ut-store-pack-details-view` container
         const detailsView = button.closest('.ut-store-pack-details-view');
@@ -106,13 +106,13 @@ function waitForItemsHeader() {
 async function handlePackOpened(packName) {
     console.log(`${packName} has been opened`);
 
-    let userID = JSON.parse(localStorage.getItem('userId')) || 0;
+    let user_id;
 
-    let openedPacks = JSON.parse(localStorage.getItem('openedPacks')) || [];
-    if (!openedPacks.includes(packName)) {
-        openedPacks.push(packName);
-        localStorage.setItem('openedPacks', JSON.stringify(openedPacks));
-    }
+    chrome.storage.local.get(["user_id"]).then((result) => {
+      user_id = result.user_id || 0;
+      console.log("user_id: ", user_id);
+    });
+
 
     // Wait for the items header to be present
     await waitForItemsHeader();
@@ -124,7 +124,7 @@ async function handlePackOpened(packName) {
     packItems.forEach(item => {
         let itemData = extractKeyPlayerAttributes(item, 'pack');
         itemData.pack_name = packName;
-        itemData.user_id = userID;
+        itemData.user_id = user_id;
         if (!itemData.rating) return;
 
         const position = itemData.position;
