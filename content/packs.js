@@ -5,6 +5,13 @@
  * Upon a click it will trigger the function handlePackOpened
  */
 function addEventListenersToPacks() {
+
+
+    // testing local storage:
+    // chrome.storage.local.get(["userId"]).then((result) => {
+    //   let userID = result.userId || 0;
+    //   console.log(userID); // Use the userID as needed
+    // });
     // Get all Open buttons on the page
     const openButtons = document.querySelectorAll('button.currency.call-to-action');
   
@@ -106,13 +113,12 @@ function waitForItemsHeader() {
 async function handlePackOpened(packName) {
     console.log(`${packName} has been opened`);
 
-    let userID = JSON.parse(localStorage.getItem('userId')) || 0;
+    // let userID = JSON.parse(localStorage.getItem('userId')) || 0;
+    chrome.storage.local.get(["userId"]).then((result) => {
+      let userID = result.userId || 0;
+      console.log("user_id = ", userID); 
+    });
 
-    let openedPacks = JSON.parse(localStorage.getItem('openedPacks')) || [];
-    if (!openedPacks.includes(packName)) {
-        openedPacks.push(packName);
-        localStorage.setItem('openedPacks', JSON.stringify(openedPacks));
-    }
 
     // Wait for the items header to be present
     await waitForItemsHeader();
