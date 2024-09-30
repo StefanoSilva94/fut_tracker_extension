@@ -20,8 +20,6 @@ async function sendBatchDataToBackend(batchData, endpoint) {
           reject(new Error("API URL not found"));
           return;
         }
-
-        console.log("API URL:", apiURL);
         resolve(apiURL); // Resolve the promise with the apiURL
       });
     });

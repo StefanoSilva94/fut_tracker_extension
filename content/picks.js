@@ -58,8 +58,6 @@ async function handlePickOpened(pickName) {
         });
     });
 
-    console.log("user_id:", user_id);
-
     pickItems.forEach(item => {
         // Get the players name, rating, position, isTradeable, isDuplicate
         let itemData = extractKeyPlayerAttributes(item, 'pick');

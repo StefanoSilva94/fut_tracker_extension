@@ -23,11 +23,9 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.is_valid) {
-                    console.log("this is valid data : ", data)
                     loadLogout();
                 }
                 else {
-                    console.log("this is the invalid data : ", data)
                     loadLogin();
                 }
 

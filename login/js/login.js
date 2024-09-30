@@ -38,12 +38,9 @@ document.addEventListener('DOMContentLoaded', function () {
               return;
           }
 
-          console.log('Retrieved API URL:', apiUrl);
           const email = loginForm.querySelector('input[type="email"]').value;
           const password = loginForm.querySelector('input[type="password"]').value;
           const loginUrl = `${apiUrl}/login`;
-
-          console.log('here is the login api: ', loginUrl);
 
           try {
 
@@ -63,9 +60,6 @@ document.addEventListener('DOMContentLoaded', function () {
               if (!response.ok) {
                   throw new Error('Invalid credentials');
               }
-
-              console.log('Access Token is this:', data.access_token);
-              console.log('User ID:', data.user_id);
 
               // Store data in chrome.storage.local
               await chrome.storage.local.set({

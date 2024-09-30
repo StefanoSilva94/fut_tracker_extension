@@ -118,8 +118,6 @@ async function handlePackOpened(packName) {
     });
   });
 
-  console.log("user_id:", user_id);
-
   // Wait for the items header to be present
   await waitForItemsHeader();
 
