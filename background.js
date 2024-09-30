@@ -3,26 +3,7 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 // Define the API URL based on the extension's installation type
-chrome.management.get(chrome.runtime.id, function(extensionInfo) {
-    let apiUrl;
-
-    if (extensionInfo.installType === 'development') {
-        // apiUrl = 'http://localhost:8000';
-        apiUrl = "https://api.fut-tracker.co.uk";
-    } else {
-        apiUrl = "https://api.fut-tracker.co.uk";
-    }
-
-    // Store the API URL in chrome.storage.local
-    chrome.storage.local.set({ "apiURL": apiUrl }, function() {
-        if (chrome.runtime.lastError) {
-            console.error('Error setting API URL:', chrome.runtime.lastError);
-        } else {
-            console.log('API URL is set: ', apiUrl);
-        }
-    });
-});
-
+let apiUrl = "https://api.fut-tracker.co.uk";
 
 // Function to update the popup based on the presence and validity of access_token
 function updatePopup() {
