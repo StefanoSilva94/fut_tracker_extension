@@ -5,7 +5,7 @@ document.getElementById("syncButton").addEventListener("click", function () {
 });
 
 function fetchUserId(email) {
-  const apiUrl = `http://127.0.0.1:8000/users/get-user-id/?email=${encodeURIComponent(email)}`;
+  const apiUrl = `https://api.fut-tracker.co.uk/users/get-user-id/?email=${encodeURIComponent(email)}`;
 
   fetch(apiUrl, {
     method: "POST", // Use POST method
@@ -28,7 +28,7 @@ function fetchUserId(email) {
       if (data.user_id === 0) {
         messageDiv.textContent = "We don't have a record of this email!";
         messageDiv.className = "error"; // Add error class for red text
-      } else if (data.user_id === 1) {
+      } else if (data.user_id >= 1) {
         messageDiv.textContent = "Email sync successful";
         messageDiv.className = "success"; // Add success class for green text
         
@@ -40,6 +40,7 @@ function fetchUserId(email) {
           window.close(); // Closes the popup
         }, 3000);
       } else {
+        console.log("Unexpected: ", data.user_id);
         messageDiv.textContent = "Unexpected response";
         messageDiv.className = ""; // Reset class
       }
