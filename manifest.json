@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "FIFA Pack Tracker",
+    "name": "FUT Tracker",
     "version": "1.0.0",
     "description": "Track and store stats of pack pulls on the EAFC Web App.",
     "permissions": [
