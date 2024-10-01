@@ -47,7 +47,17 @@ function handlePickOpened(pickName) {
     let itemsData = [];
 
     // Extract user id from local storage, if user is not logged in user default user
-    let userID = 0;
+    let userID = 0; // Default value
+
+    // Retrieve the user ID from local storage
+    chrome.storage.local.get(["user_id"], (result) => {
+      if (result.user_id !== undefined) {
+        userID = result.user_id; // Set userID to the stored value
+        console.log("User ID retrieved from local storage:", userID);
+      } else {
+        console.log("User ID not found in local storage, defaulting to 0.");
+      }
+    });
 
     pickItems.forEach(item => {
         // Get the players name, rating, position, isTradeable, isDuplicate
