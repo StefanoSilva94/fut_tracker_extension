@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Sync</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        #emailInput {
+            width: 300px; /* Adjust this width as needed to fit most email addresses */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px; /* Slightly rounded corners */
+            font-size: 16px;
+        }
+
+        #syncButton {
+            width: 100%; /* Make the button take the full width of the container */
+            padding: 10px;
+            background-color: #007bff; /* Bootstrap primary blue color */
+            color: white;
+            border: none;
+            border-radius: 8px; /* Rounded corners for the button */
+            cursor: pointer;
+            margin-top: 10px; /* Small gap between input and button */
+            font-size: 16px;
+        }
+
+        #syncButton:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        #message {
+            margin-top: 10px; /* Gap above message */
+            font-size: 14px;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .success {
+            color: green;
+        }
+
+    </style>
+</head>
+
+<body>
+    <input type="email" id="emailInput" placeholder="Enter your email" required>
+    <button id="syncButton">Sync Email</button>
+    <div id="message"></div>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>

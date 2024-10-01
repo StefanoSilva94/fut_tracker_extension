@@ -7,7 +7,6 @@
 function addEventListenersToPacks() {
     // Get all Open buttons on the page
     const openButtons = document.querySelectorAll('button.currency.call-to-action');
-  
     openButtons.forEach(button => {
     // Extract the pack name from the closest `ut-store-pack-details-view` container
         const detailsView = button.closest('.ut-store-pack-details-view');
@@ -23,6 +22,7 @@ function addEventListenersToPacks() {
         // If no listener is added, mark the listener as added
         if (!button.dataset.listenerAdded) {
         button.dataset.listenerAdded = 'true';
+        
   
         console.log(`Added an event listener to pack: ${packName}`);
         
@@ -106,19 +106,22 @@ function waitForItemsHeader() {
 async function handlePackOpened(packName) {
     console.log(`${packName} has been opened`);
 
-    let userID = JSON.parse(localStorage.getItem('userId')) || 0;
+    let userID = 0; // Default value
 
-    let openedPacks = JSON.parse(localStorage.getItem('openedPacks')) || [];
-    if (!openedPacks.includes(packName)) {
-        openedPacks.push(packName);
-        localStorage.setItem('openedPacks', JSON.stringify(openedPacks));
-    }
+    // Retrieve the user ID from local storage
+    chrome.storage.local.get(["user_id"], (result) => {
+      if (result.user_id !== undefined) {
+        userID = result.user_id; // Set userID to the stored value
+        console.log("User ID retrieved from local storage:", userID);
+      } else {
+        console.log("User ID not found in local storage, defaulting to 0.");
+      }
+    });
 
     // Wait for the items header to be present
     await waitForItemsHeader();
 
     const packItems = document.querySelectorAll('.entityContainer');
-    console.log(`Pack Items Length: ${packItems.length}`);
 
     let itemsData = [];
     packItems.forEach(item => {

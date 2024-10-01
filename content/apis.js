@@ -4,9 +4,8 @@
  * @param {string} endpoint - The URL of the backend API endpoint.
  */
 
-function sendBatchDataToBackend(batchData, endpoint) {
-
-    const apiUrl = localStorage.getItem('apiUrl');
+function sendBatchDataToBackend(batchData, endpoint) { 
+    const apiUrl = "https://api.fut-tracker.co.uk";
     const url = apiUrl + endpoint;
     fetch(url, {
         method: 'POST',
@@ -22,20 +21,5 @@ function sendBatchDataToBackend(batchData, endpoint) {
     .catch((error) => {
         console.error('Error sending batch data to the backend:', error);
         console.log("API URL: ", apiUrl);
-    });
-}
-
-
-function retrieveUserId() {
-    return new Promise((resolve, reject) => {
-        chrome.storage.local.get(['user_id'], function(result) {
-            if (chrome.runtime.lastError) {
-                console.error('Error retrieving user ID:', chrome.runtime.lastError);
-                resolve(0); // Resolve with default value in case of error
-            } else {
-                // Resolve with the user_id or default value
-                resolve(result.user_id || 0);
-            }
-        });
     });
 }
