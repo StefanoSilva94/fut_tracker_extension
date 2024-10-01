@@ -47,7 +47,7 @@ function handlePickOpened(pickName) {
     let itemsData = [];
 
     // Extract user id from local storage, if user is not logged in user default user
-    let userID = JSON.parse(localStorage.getItem('userId')) || 0;
+    let userID = 0;
 
     pickItems.forEach(item => {
         // Get the players name, rating, position, isTradeable, isDuplicate

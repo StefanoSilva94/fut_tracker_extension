@@ -106,19 +106,12 @@ function waitForItemsHeader() {
 async function handlePackOpened(packName) {
     console.log(`${packName} has been opened`);
 
-    let userID = JSON.parse(localStorage.getItem('userId')) || 0;
-
-    let openedPacks = JSON.parse(localStorage.getItem('openedPacks')) || [];
-    if (!openedPacks.includes(packName)) {
-        openedPacks.push(packName);
-        localStorage.setItem('openedPacks', JSON.stringify(openedPacks));
-    }
+    let userID = 0;
 
     // Wait for the items header to be present
     await waitForItemsHeader();
 
     const packItems = document.querySelectorAll('.entityContainer');
-    console.log(`Pack Items Length: ${packItems.length}`);
 
     let itemsData = [];
     packItems.forEach(item => {
