@@ -44,53 +44,70 @@ function addEventListenersToPacks() {
  * @returns {Promise<void>}
  */
 function waitForItemsHeader() {
-    return new Promise((resolve, reject) => {
-        const timeout = 20000; 
-        let timer;
+  return new Promise((resolve, reject) => {
+    const timeout = 20000;
+    let timer;
 
-        // Function to clean up after timeout or successful observation
-        function cleanup() {
-            if (timer) clearTimeout(timer);
-            observer.disconnect();
+    // Function to clean up after timeout or successful observation
+    function cleanup() {
+      if (timer) clearTimeout(timer);
+      observer.disconnect();
+    }
+
+    // Create a MutationObserver to watch for changes in the DOM
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.addedNodes.length > 0) {
+          for (const node of mutation.addedNodes) {
+            if (
+              node.nodeType === Node.ELEMENT_NODE &&
+              node.matches("h2.title") &&
+              node.textContent.trim() === "Items"
+            ) {
+              cleanup();
+              resolve();
+              return;
+            } else if (node.nodeType === Node.ELEMENT_NODE &&
+              node.matches("h2.title") &&
+              node.textContent.trim() === "Untradeable Duplicates") {
+              cleanup();
+              resolve();
+              return;
+            }
+          }
         }
-
-        // Create a MutationObserver to watch for changes in the DOM
-        const observer = new MutationObserver((mutations) => {
-            for (const mutation of mutations) {
-                if (mutation.addedNodes.length > 0) {
-                    for (const node of mutation.addedNodes) {
-                        if (node.nodeType === Node.ELEMENT_NODE && node.matches('h2.title') && node.textContent.trim() === 'Items') {
-                            cleanup();
-                            resolve();
-                            return;
-                        }
-                    }
-                }
-            }
-        });
-
-        // Observe changes in the DOM
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-
-        // Set a timeout to reject the promise if the header is not found within 10 seconds
-        timer = setTimeout(() => {
-            cleanup();
-            reject(new Error('Timeout: items header not found within 10 seconds'));
-        }, timeout);
-
-        // Optionally, check periodically if the header is already present
-        const intervalId = setInterval(() => {
-            const headerElement = document.querySelector('h2.title');
-            if (headerElement && headerElement.textContent.trim() === 'Items') {
-                clearInterval(intervalId);
-                cleanup();
-                resolve();
-            }
-        }, 100); // Check every 100ms or adjust as necessary
+      }
     });
+
+    // Observe changes in the DOM
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+
+    // Set a timeout to reject the promise if the header is not found within 10 seconds
+    timer = setTimeout(() => {
+      cleanup();
+      reject(new Error("Timeout: items header not found within 10 seconds"));
+    }, timeout);
+
+    // Optionally, check periodically if the header is already present
+    const intervalId = setInterval(() => {
+      const headerElement = document.querySelector("h2.title");
+      if (headerElement && headerElement.textContent.trim() === "Items") {
+        clearInterval(intervalId);
+        cleanup();
+        resolve();
+      } else if (
+        headerElement &&
+        headerElement.textContent.trim() === "Untradeable Duplicates"
+      ) {
+        clearInterval(intervalId);
+        cleanup();
+        resolve();
+      }
+    }, 100); // Check every 100ms or adjust as necessary
+  });
 }
 
 
@@ -136,7 +153,11 @@ async function handlePackOpened(packName) {
         } else {
             itemData = { ...itemData, ...extractOutfieldPlayerAttributes(item) };
         }
-
+        duplicate_header = item.closest(".storage-duplicates");
+        if (duplicate_header){
+            console.log("header found")
+            itemData.is_duplicate = true
+        }
         console.log("Item object:", itemData);
         itemsData.push(itemData);
     });

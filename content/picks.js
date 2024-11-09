@@ -39,77 +39,102 @@ function addEventListenersToPicks() {
  * which element is currently selected by the user
  * @param {string} pickName - name of the player pick opened
  */
-function handlePickOpened(pickName) {
-    console.log(`Player Pick: ${pickName} has been opened`);
-    
-    const pickItems = document.querySelectorAll(".player-pick-option");
-    // Array to hold all item data
-    let itemsData = [];
+async function handlePickOpened(pickName) {
+  console.log(`Player Pick: ${pickName} has been opened`);
 
-    // Extract user id from local storage, if user is not logged in user default user
-    let userID = 0; // Default value
+  const pickItems = document.querySelectorAll(".player-pick-option");
+  let itemsData = [];
 
-    // Retrieve the user ID from local storage
-    chrome.storage.local.get(["user_id"], (result) => {
-      if (result.user_id !== undefined) {
-        userID = result.user_id; // Set userID to the stored value
-        console.log("User ID retrieved from local storage:", userID);
-      } else {
-        console.log("User ID not found in local storage, defaulting to 0.");
-      }
-    });
-
-    pickItems.forEach(item => {
-        // Get the players name, rating, position, isTradeable, isDuplicate
-        let itemData = extractKeyPlayerAttributes(item, 'pick');
-        itemData.pack_name = pickName
-        itemData.user_id = userID
-        const position = itemData.position
-        // Populate attributes based on player position
-        if (position === "GK") {
-            const diving = item.querySelector(".Pace.statValue").textContent.trim();
-            const handling = item.querySelector(".Shooting.statValue").textContent.trim();
-            const kicking = item.querySelector(".Passing.statValue").textContent.trim();
-            const reflexes = item.querySelector(".Dribbling.statValue").textContent.trim();
-            const speed = item.querySelector(".Defending.statValue").textContent.trim();
-            const positioning = item.querySelector(".Header.statValue").textContent.trim();
-            itemData = {
-                ...itemData,
-                diving,
-                handling,
-                kicking,
-                reflexes,
-                speed,
-                positioning
-            };
+  // Function to retrieve the user ID
+  const getUserID = () => {
+    return new Promise((resolve) => {
+      chrome.storage.local.get(["user_id"], (result) => {
+        if (result.user_id !== undefined) {
+          console.log("User ID retrieved from local storage:", result.user_id);
+          resolve(result.user_id); // Resolve the promise with user_id
         } else {
-            const shooting = item.querySelector(".Shooting.statValue").textContent.trim();
-            const dribbling = item.querySelector(".Dribbling.statValue").textContent.trim();
-            const passing = item.querySelector(".Passing.statValue").textContent.trim();
-            const pace = item.querySelector(".Pace.statValue").textContent.trim();
-            const defending = item.querySelector(".Defending.statValue").textContent.trim();
-            const physical = item.querySelector(".Header.statValue").textContent.trim();
-            itemData = {
-                ...itemData,
-                shooting,
-                dribbling,
-                passing,
-                pace,
-                defending,
-                physical
-            };
+          console.log("User ID not found in local storage, defaulting to 0.");
+          resolve(0); // Resolve with default value
         }
+      });
+    });
+  };
 
-        // Add item to itemsData array
-        itemsData.push(itemData);
+  // Retrieve user ID
+  let userID = await getUserID();
 
-    })
-    // Add event listener to each pick to see which one is selectedand currently active
-    // When the Confirm button is clicked it will add the value: isSelected to that player
-    itemsData = addEventListenersToPickItems(itemsData, pickItems, pickName)
-    console.log('Item all data:', itemsData);
+  pickItems.forEach((item) => {
+    // Get the players name, rating, position, isTradeable, isDuplicate
+    let itemData = extractKeyPlayerAttributes(item, "pick");
+    itemData.pack_name = pickName;
+    itemData.user_id = userID; // Now userID will have the correct value
 
+    const position = itemData.position;
+    // Populate attributes based on player position
+    if (position === "GK") {
+      const diving = item.querySelector(".Pace.statValue").textContent.trim();
+      const handling = item
+        .querySelector(".Shooting.statValue")
+        .textContent.trim();
+      const kicking = item
+        .querySelector(".Passing.statValue")
+        .textContent.trim();
+      const reflexes = item
+        .querySelector(".Dribbling.statValue")
+        .textContent.trim();
+      const speed = item
+        .querySelector(".Defending.statValue")
+        .textContent.trim();
+      const positioning = item
+        .querySelector(".Header.statValue")
+        .textContent.trim();
+      itemData = {
+        ...itemData,
+        diving,
+        handling,
+        kicking,
+        reflexes,
+        speed,
+        positioning,
+      };
+    } else {
+      const shooting = item
+        .querySelector(".Shooting.statValue")
+        .textContent.trim();
+      const dribbling = item
+        .querySelector(".Dribbling.statValue")
+        .textContent.trim();
+      const passing = item
+        .querySelector(".Passing.statValue")
+        .textContent.trim();
+      const pace = item.querySelector(".Pace.statValue").textContent.trim();
+      const defending = item
+        .querySelector(".Defending.statValue")
+        .textContent.trim();
+      const physical = item
+        .querySelector(".Header.statValue")
+        .textContent.trim();
+      itemData = {
+        ...itemData,
+        shooting,
+        dribbling,
+        passing,
+        pace,
+        defending,
+        physical,
+      };
+    }
+
+    // Add item to itemsData array
+    itemsData.push(itemData);
+  });
+
+  // Add event listener to each pick to see which one is selected and currently active
+  // When the Confirm button is clicked it will add the value: isSelected to that player
+  itemsData = addEventListenersToPickItems(itemsData, pickItems, pickName);
+  console.log("Item all data:", itemsData);
 }
+
 
 
 /**
